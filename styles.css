@@ -1,0 +1,262 @@
+:root {
+  --bg: #07140d;
+  --panel: #0e2418;
+  --gold: #d4b06a;
+  --cream: #f4ecd8;
+  --ok: #3dd68c;
+  --warn: #f0c14b;
+  --bad: #ff6b6b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(1200px 500px at 10% -10%, #1a4a2e 0%, transparent 55%),
+    var(--bg);
+  color: var(--cream);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 0.02em;
+}
+
+.kicker {
+  margin: 0 0 4px;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.tagline {
+  margin: 8px 0 0;
+  opacity: 0.85;
+}
+
+.dances {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 18px 2px 4px;
+  margin-top: 8px;
+}
+
+.dance-chip {
+  flex: 1 0 8.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(14, 36, 24, 0.92);
+  color: var(--cream);
+  border: 1px solid rgba(212, 176, 106, 0.25);
+  text-align: left;
+}
+
+.dance-chip small {
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.dance-ar {
+  color: var(--gold);
+  font-size: 0.85rem;
+}
+
+.dance-chip.is-on {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold);
+}
+
+.now-dancing {
+  margin: 0 0 10px;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: 1.6fr 0.9fr;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.camera-card,
+.panel {
+  background: rgba(14, 36, 24, 0.92);
+  border: 1px solid rgba(212, 176, 106, 0.25);
+  border-radius: 18px;
+}
+
+.video-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #020805;
+}
+
+video, canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+video.from-file,
+video.from-file + canvas {
+  object-fit: contain;
+}
+
+video.from-file {
+  background: #000;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.file-btn {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #08150e;
+  background: linear-gradient(180deg, #f0d392, var(--gold));
+}
+
+button.ghost,
+.file-btn.ghost {
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid rgba(212, 176, 106, 0.55);
+}
+
+.fineprint {
+  margin: 0;
+  max-width: 36rem;
+  font-size: 0.85rem;
+  opacity: 0.75;
+  line-height: 1.4;
+}
+
+.source-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+canvas {
+  pointer-events: none;
+}
+
+.permission {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+  background: rgba(2, 8, 5, 0.72);
+}
+
+.permission[hidden] {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #08150e;
+  background: linear-gradient(180deg, #f0d392, var(--gold));
+}
+
+.toast {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  transform: translateX(-50%);
+  max-width: 90%;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  background: rgba(8, 21, 14, 0.88);
+  border: 1px solid var(--gold);
+}
+
+.toast.ok { border-color: var(--ok); color: var(--ok); }
+.toast.warn { border-color: var(--warn); color: var(--warn); }
+.toast.bad { border-color: var(--bad); color: var(--bad); }
+
+.panel {
+  padding: 20px;
+}
+
+.score-block .label {
+  display: block;
+  color: var(--gold);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.score-block strong {
+  font-size: 3rem;
+  line-height: 1.1;
+}
+
+.cues {
+  margin: 12px 0 20px;
+  padding-left: 18px;
+}
+
+.cues li {
+  margin: 8px 0;
+}
+
+.hint h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: var(--gold);
+}
+
+.hint p {
+  margin: 0;
+  opacity: 0.85;
+  line-height: 1.45;
+}
+
+@media (max-width: 860px) {
+  .stage {
+    grid-template-columns: 1fr;
+  }
+}

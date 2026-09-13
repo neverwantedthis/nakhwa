@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nakhwa — Saudi dance coach</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <p class="kicker">نخوة</p>
+        <h1>Nakhwa</h1>
+      </div>
+      <p class="tagline">Live form cues for Saudi folk dance. Pick a style, then use your camera or a clip.</p>
+    </header>
+
+    <nav class="dances" id="danceNav" aria-label="Saudi dances">
+      <button type="button" class="dance-chip is-on" data-dance="ardah">
+        <span class="dance-ar">العرضة</span>
+        <strong>Ardah</strong>
+        <small>Najd · sword</small>
+      </button>
+      <button type="button" class="dance-chip" data-dance="mezmar">
+        <span class="dance-ar">المزمار</span>
+        <strong>Mezmar</strong>
+        <small>Hijaz · stick</small>
+      </button>
+      <button type="button" class="dance-chip" data-dance="tasheer">
+        <span class="dance-ar">التعشير</span>
+        <strong>Ta'sheer</strong>
+        <small>Hijaz · rifle jump</small>
+      </button>
+      <button type="button" class="dance-chip" data-dance="khatwa">
+        <span class="dance-ar">الخطوة</span>
+        <strong>Khatwa</strong>
+        <small>South · step</small>
+      </button>
+      <button type="button" class="dance-chip" data-dance="samri">
+        <span class="dance-ar">السامري</span>
+        <strong>Samri</strong>
+        <small>Najd · clap</small>
+      </button>
+    </nav>
+
+    <main class="stage">
+      <section class="camera-card">
+        <div class="video-wrap">
+          <video id="webcam" playsinline muted></video>
+          <canvas id="overlay"></canvas>
+          <div id="toast" class="toast" hidden></div>
+          <div id="permission" class="permission">
+            <p>Allow the camera, or test with a video. Full body works best.</p>
+            <div class="actions">
+              <button id="startBtn" type="button">Start camera</button>
+              <label class="file-btn">
+                Choose video
+                <input id="fileInput" type="file" accept="video/*" hidden />
+              </label>
+              <button id="sampleBtn" type="button" class="ghost">Try Ardah sample</button>
+            </div>
+            <p class="fineprint">Each dance has its own looping sample. Pick a style, then try its sample to see if scoring matches.</p>
+          </div>
+        </div>
+        <div class="source-bar">
+          <button id="startBtn2" type="button" class="ghost">Camera</button>
+          <label class="file-btn ghost">
+            Video file
+            <input id="fileInput2" type="file" accept="video/*" hidden />
+          </label>
+          <button id="sampleBtn2" type="button" class="ghost">Ardah sample</button>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <p class="now-dancing" id="nowDancing">Ardah · العرضة</p>
+        <div class="score-block">
+          <span class="label">Form</span>
+          <strong id="score">—</strong>
+        </div>
+        <ul id="cues" class="cues">
+          <li>Camera off</li>
+        </ul>
+        <div class="hint">
+          <h2>What it checks</h2>
+          <p id="hintText">Proud upright chest, a slightly bent bounce in the knees, a raised sword arm, and a steady rhythm.</p>
+        </div>
+      </aside>
+    </main>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
