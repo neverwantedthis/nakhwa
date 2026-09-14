@@ -1,46 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nakhwa — Saudi dance coach</title>
+  <title>نخوة · اليوم الوطني السعودي ٩٦</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@500;700;800&family=Noto+Naskh+Arabic:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="sand"></div>
+  <aside class="nd-banner" aria-label="Saudi National Day">
+    <span class="nd-ar">اليوم الوطني السعودي</span>
+    <span class="nd-sep">✦</span>
+    <span>٢٣ سبتمبر</span>
+    <span class="nd-sep">✦</span>
+    <span class="nd-year">٩٦</span>
+    <span class="nd-sep">✦</span>
+    <span class="nd-ar">هي لنا دار</span>
+  </aside>
+
   <div class="app">
     <header class="topbar">
-      <div>
-        <p class="kicker">نخوة</p>
-        <h1>Nakhwa</h1>
+      <img class="logo" src="images/nakhwa-logo.png?v=3" alt="Nakhwa نخوة" width="220" height="220" />
+      <div class="topbar-copy">
+        <p class="kicker">نخوة · تراث المملكة</p>
+        <p class="tagline">
+          درّب العرضة والمزمار والتعشير والخطوة والسامري بالكاميرا.
+          <span class="tagline-en">Live form cues for Saudi folk dance — for National Day and every gathering.</span>
+        </p>
       </div>
-      <p class="tagline">Live form cues for Saudi folk dance. Pick a style, then use your camera or a clip.</p>
     </header>
 
-    <nav class="dances" id="danceNav" aria-label="Saudi dances">
+    <p class="motto">أصالتنا سر عزنا</p>
+
+    <nav class="dances" id="danceNav" aria-label="رقصات سعودية">
       <button type="button" class="dance-chip is-on" data-dance="ardah">
         <span class="dance-ar">العرضة</span>
         <strong>Ardah</strong>
-        <small>Najd · sword</small>
+        <small>نجد · السيف</small>
       </button>
       <button type="button" class="dance-chip" data-dance="mezmar">
         <span class="dance-ar">المزمار</span>
         <strong>Mezmar</strong>
-        <small>Hijaz · stick</small>
+        <small>الحجاز · العصا</small>
       </button>
       <button type="button" class="dance-chip" data-dance="tasheer">
         <span class="dance-ar">التعشير</span>
         <strong>Ta'sheer</strong>
-        <small>Hijaz · rifle jump</small>
+        <small>الحجاز · البندقية</small>
       </button>
       <button type="button" class="dance-chip" data-dance="khatwa">
         <span class="dance-ar">الخطوة</span>
         <strong>Khatwa</strong>
-        <small>South · step</small>
+        <small>الجنوب · الخطوة</small>
       </button>
       <button type="button" class="dance-chip" data-dance="samri">
         <span class="dance-ar">السامري</span>
         <strong>Samri</strong>
-        <small>Najd · clap</small>
+        <small>نجد · التصفيق</small>
       </button>
     </nav>
 
@@ -51,43 +70,53 @@
           <canvas id="overlay"></canvas>
           <div id="toast" class="toast" hidden></div>
           <div id="permission" class="permission">
+            <p class="perm-ar">افتح الكاميرا، أو جرّب مقطعاً. الجسم كامل في الإطار أفضل.</p>
             <p>Allow the camera, or test with a video. Full body works best.</p>
             <div class="actions">
-              <button id="startBtn" type="button">Start camera</button>
+              <button id="startBtn" type="button">ابدأ الكاميرا</button>
               <label class="file-btn">
-                Choose video
+                اختر فيديو
                 <input id="fileInput" type="file" accept="video/*" hidden />
               </label>
-              <button id="sampleBtn" type="button" class="ghost">Try Ardah sample</button>
+              <button id="sampleBtn" type="button" class="ghost">جرّب عينة العرضة</button>
             </div>
-            <p class="fineprint">Each dance has its own looping sample. Pick a style, then try its sample to see if scoring matches.</p>
+            <p class="fineprint">لكل رقصة عيّنة. اختر الأسلوب ثم اضغط العينة لترى التقييم.</p>
           </div>
         </div>
         <div class="source-bar">
-          <button id="startBtn2" type="button" class="ghost">Camera</button>
+          <button id="startBtn2" type="button" class="ghost">الكاميرا</button>
           <label class="file-btn ghost">
-            Video file
+            ملف فيديو
             <input id="fileInput2" type="file" accept="video/*" hidden />
           </label>
-          <button id="sampleBtn2" type="button" class="ghost">Ardah sample</button>
+          <button id="sampleBtn2" type="button" class="ghost">عينة العرضة</button>
         </div>
       </section>
 
       <aside class="panel">
         <p class="now-dancing" id="nowDancing">Ardah · العرضة</p>
         <div class="score-block">
-          <span class="label">Form</span>
+          <span class="label">التقييم · Form</span>
           <strong id="score">—</strong>
         </div>
         <ul id="cues" class="cues">
-          <li>Camera off</li>
+          <li>الكاميرا مغلقة</li>
         </ul>
         <div class="hint">
-          <h2>What it checks</h2>
+          <h2>ماذا يُفحص؟</h2>
           <p id="hintText">Proud upright chest, a slightly bent bounce in the knees, a raised sword arm, and a steady rhythm.</p>
+        </div>
+        <div class="nd-note">
+          <p class="nd-note-ar">دام عزك يا وطن</p>
+          <p>٢٣ سبتمبر ١٩٣٢ — توحيد المملكة. في ٢٠٢٦ نحتفل بالنسخة <strong>٩٦</strong> من اليوم الوطني، والعرضة في قلب الاحتفال.</p>
         </div>
       </aside>
     </main>
+
+    <footer class="site-foot">
+      <p class="foot-ar">فخر · نخوة · وحدة</p>
+      <p>Nakhwa · Saudi folk dance coach · National Day 96</p>
+    </footer>
   </div>
   <script type="module" src="app.js"></script>
 </body>

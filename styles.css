@@ -1,11 +1,13 @@
 :root {
-  --bg: #07140d;
-  --panel: #0e2418;
+  --bg: #1a110c;
+  --panel: #2b1c14;
   --gold: #d4b06a;
   --cream: #f4ecd8;
-  --ok: #3dd68c;
-  --warn: #f0c14b;
-  --bad: #ff6b6b;
+  --ok: #c4a574;
+  --warn: #e0b35c;
+  --bad: #e07a62;
+  --brown: #6b4226;
+  --ink: #2a1810;
 }
 
 * {
@@ -16,33 +18,142 @@ html, body {
   margin: 0;
   min-height: 100%;
   background:
-    radial-gradient(1200px 500px at 10% -10%, #1a4a2e 0%, transparent 55%),
+    radial-gradient(1000px 480px at 8% -8%, #5a3a24 0%, transparent 50%),
+    radial-gradient(900px 400px at 100% 0%, #3d2418 0%, transparent 45%),
     var(--bg);
   color: var(--cream);
-  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-family: "Cairo", "Segoe UI", Tahoma, sans-serif;
+}
+
+.sand {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  opacity: 0.14;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 18px,
+      rgba(212, 176, 106, 0.35) 18px 19px,
+      transparent 19px 36px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 18px,
+      rgba(107, 66, 38, 0.5) 18px 19px,
+      transparent 19px 36px
+    );
+  mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
+}
+
+.nd-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 16px;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, #4a2e1c, #6b4226 40%, #3d2418);
+  border-bottom: 1px solid rgba(212, 176, 106, 0.45);
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
+  font-weight: 700;
+  font-size: 1.38rem;
+  letter-spacing: 0;
+}
+
+.nd-ar {
+  font-size: 1.48rem;
+}
+
+.nd-year {
+  color: var(--gold);
+  font-size: 1.55rem;
+}
+
+.nd-sep {
+  color: var(--gold);
+  opacity: 0.8;
 }
 
 .app {
+  position: relative;
   max-width: 1100px;
   margin: 0 auto;
   padding: 24px 20px 40px;
 }
 
-.topbar h1 {
-  margin: 0;
-  font-size: 2rem;
-  letter-spacing: 0.02em;
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.logo {
+  display: block;
+  width: 220px;
+  height: auto;
+  flex-shrink: 0;
+  background: transparent;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.28));
+}
+
+.topbar-copy {
+  min-width: 0;
 }
 
 .kicker {
   margin: 0 0 4px;
   color: var(--gold);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.45rem;
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
 }
 
 .tagline {
   margin: 8px 0 0;
+  opacity: 0.92;
+  font-size: 1.38rem;
+  line-height: 1.65;
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
+}
+
+.tagline-en {
+  display: block;
+  margin-top: 6px;
+  font-family: "Cairo", sans-serif;
+  font-size: 1.25rem;
   opacity: 0.85;
+}
+
+.motto {
+  margin: 22px 0 4px;
+  color: var(--gold);
+  font-family: "Aref Ruqaa", "Noto Naskh Arabic", serif;
+  font-size: clamp(1.8rem, 4.2vw, 2.85rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.7;
+  text-align: center;
+  text-shadow: 0 2px 0 #2a1810;
+}
+
+.motto::after {
+  content: "";
+  display: block;
+  width: 7.5rem;
+  height: 2px;
+  margin: 6px auto 0;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: linear-gradient(180deg, #e6c98a, var(--gold));
 }
 
 .dances {
@@ -61,31 +172,42 @@ html, body {
   gap: 2px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: rgba(14, 36, 24, 0.92);
+  background: rgba(43, 28, 20, 0.94);
   color: var(--cream);
-  border: 1px solid rgba(212, 176, 106, 0.25);
+  border: 1px solid rgba(212, 176, 106, 0.28);
   text-align: left;
+}
+
+.dance-chip strong {
+  font-size: 1.22rem;
 }
 
 .dance-chip small {
   font-weight: 500;
-  opacity: 0.7;
+  opacity: 0.8;
+  font-size: 1.12rem;
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
 }
 
 .dance-ar {
   color: var(--gold);
-  font-size: 0.85rem;
+  font-size: 1.38rem;
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
+  font-weight: 700;
 }
 
 .dance-chip.is-on {
   border-color: var(--gold);
   box-shadow: 0 0 0 1px var(--gold);
+  background: #3a261a;
 }
 
 .now-dancing {
   margin: 0 0 10px;
   color: var(--gold);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.4rem;
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
 }
 
 .stage {
@@ -97,8 +219,8 @@ html, body {
 
 .camera-card,
 .panel {
-  background: rgba(14, 36, 24, 0.92);
-  border: 1px solid rgba(212, 176, 106, 0.25);
+  background: rgba(43, 28, 20, 0.94);
+  border: 1px solid rgba(212, 176, 106, 0.28);
   border-radius: 18px;
 }
 
@@ -107,7 +229,7 @@ html, body {
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 18px;
-  background: #020805;
+  background: #140c08;
 }
 
 video, canvas {
@@ -124,7 +246,12 @@ video.from-file + canvas {
 }
 
 video.from-file {
-  background: #000;
+  background: #140c08;
+}
+
+video:not(.from-file),
+.video-wrap:has(video:not(.from-file)) > canvas {
+  transform: scaleX(-1);
 }
 
 .actions {
@@ -140,10 +267,10 @@ video.from-file {
   cursor: pointer;
   border-radius: 999px;
   padding: 12px 22px;
-  font-size: 1rem;
+  font-size: 1.22rem;
   font-weight: 700;
-  color: #08150e;
-  background: linear-gradient(180deg, #f0d392, var(--gold));
+  color: var(--ink);
+  background: linear-gradient(180deg, #e6c98a, var(--gold));
 }
 
 button.ghost,
@@ -156,9 +283,10 @@ button.ghost,
 .fineprint {
   margin: 0;
   max-width: 36rem;
-  font-size: 0.85rem;
-  opacity: 0.75;
-  line-height: 1.4;
+  font-size: 1.18rem;
+  opacity: 0.8;
+  line-height: 1.55;
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
 }
 
 .source-bar {
@@ -179,25 +307,24 @@ canvas {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   padding: 24px;
   text-align: center;
-  background: rgba(2, 8, 5, 0.72);
+  background: rgba(20, 12, 8, 0.78);
+}
+
+.perm-ar {
+  margin: 0;
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
+  font-size: 1.4rem;
+}
+
+.permission p {
+  font-size: 1.25rem;
 }
 
 .permission[hidden] {
   display: none;
-}
-
-button {
-  cursor: pointer;
-  border: 0;
-  border-radius: 999px;
-  padding: 12px 22px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #08150e;
-  background: linear-gradient(180deg, #f0d392, var(--gold));
 }
 
 .toast {
@@ -209,7 +336,8 @@ button {
   padding: 10px 16px;
   border-radius: 999px;
   font-weight: 700;
-  background: rgba(8, 21, 14, 0.88);
+  font-size: 1.18rem;
+  background: rgba(26, 17, 12, 0.9);
   border: 1px solid var(--gold);
 }
 
@@ -224,9 +352,8 @@ button {
 .score-block .label {
   display: block;
   color: var(--gold);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+  font-size: 1.18rem;
+  letter-spacing: 0.08em;
 }
 
 .score-block strong {
@@ -237,6 +364,7 @@ button {
 .cues {
   margin: 12px 0 20px;
   padding-left: 18px;
+  font-size: 1.25rem;
 }
 
 .cues li {
@@ -245,18 +373,66 @@ button {
 
 .hint h2 {
   margin: 0 0 8px;
-  font-size: 1rem;
+  font-size: 1.38rem;
   color: var(--gold);
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
 }
 
 .hint p {
   margin: 0;
-  opacity: 0.85;
-  line-height: 1.45;
+  opacity: 0.9;
+  font-size: 1.22rem;
+  line-height: 1.55;
+}
+
+.nd-note {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(212, 176, 106, 0.25);
+}
+
+.nd-note-ar {
+  margin: 0 0 6px;
+  color: var(--gold);
+  font-family: "Noto Naskh Arabic", serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.nd-note p {
+  margin: 0;
+  font-size: 1.22rem;
+  line-height: 1.55;
+  opacity: 0.9;
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
+}
+
+.site-foot {
+  margin-top: 28px;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.foot-ar {
+  margin: 0 0 4px;
+  font-family: "Noto Naskh Arabic", serif;
+  font-size: 1.45rem;
+  color: var(--gold);
+  letter-spacing: 0;
+}
+
+.site-foot p:last-child {
+  margin: 0;
+  font-size: 1.18rem;
 }
 
 @media (max-width: 860px) {
   .stage {
     grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    flex-direction: column;
+    text-align: center;
   }
 }

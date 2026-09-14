@@ -220,7 +220,7 @@ async function loadSampleFrames(id) {
 function drawSampleFrame(img, phase, dance) {
   const w = sampleCanvas.width;
   const h = sampleCanvas.height;
-  sampleCtx.fillStyle = "#07140d";
+  sampleCtx.fillStyle = "#1a110c";
   sampleCtx.fillRect(0, 0, w, h);
   const scale = Math.min(w / img.width, h / img.height) * 0.92;
   const dw = img.width * scale;
@@ -608,7 +608,7 @@ function reviewSamri(lm) {
 function drawSkeleton(lm) {
   ctx.lineWidth = 4;
   ctx.strokeStyle = "rgba(212, 176, 106, 0.9)";
-  ctx.fillStyle = "#3dd68c";
+  ctx.fillStyle = "#d4b06a";
   for (const [a, b] of CONNECTIONS) {
     ctx.beginPath();
     ctx.moveTo(lm[a].x * canvas.width, lm[a].y * canvas.height);
