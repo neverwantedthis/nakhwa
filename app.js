@@ -16,12 +16,6 @@ const ytBtn = document.getElementById("ytBtn");
 const hintText = document.getElementById("hintText");
 const nowDancing = document.getElementById("nowDancing");
 
-const CONNECTIONS = [
-  [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
-  [11, 23], [12, 24], [23, 24], [23, 25], [25, 27],
-  [24, 26], [26, 28],
-];
-
 let poseLandmarker;
 let lastVideoTime = -1;
 let lastToastKey = "";
@@ -170,7 +164,6 @@ function drawAndCoach(result) {
     maybeToast("الجسم مو في الإطار", "bad", "missing");
     return;
   }
-  drawSkeleton(landmarks);
   const review = DANCES[currentDance].review(landmarks);
   setPanel(review.score, review.cues);
   maybeToast(review.popup.text, review.popup.tone, review.popup.key);
@@ -433,23 +426,6 @@ function reviewSamri(lm) {
   else popup = { text: "That's the majlis feel", tone: "ok", key: "good" };
 
   return finish(score, cues, popup, "Warm Samri — keep the claps and sway.");
-}
-
-function drawSkeleton(lm) {
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = "rgba(212, 176, 106, 0.9)";
-  ctx.fillStyle = "#d4b06a";
-  for (const [a, b] of CONNECTIONS) {
-    ctx.beginPath();
-    ctx.moveTo(lm[a].x * canvas.width, lm[a].y * canvas.height);
-    ctx.lineTo(lm[b].x * canvas.width, lm[b].y * canvas.height);
-    ctx.stroke();
-  }
-  for (const point of [0, 11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28]) {
-    ctx.beginPath();
-    ctx.arc(lm[point].x * canvas.width, lm[point].y * canvas.height, 6, 0, Math.PI * 2);
-    ctx.fill();
-  }
 }
 
 function setPanel(score, cues) {
