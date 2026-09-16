@@ -12,17 +12,9 @@ const scoreEl = document.getElementById("score");
 const cuesEl = document.getElementById("cues");
 const startBtn = document.getElementById("startBtn");
 const startBtn2 = document.getElementById("startBtn2");
-const sampleBtn = document.getElementById("sampleBtn");
-const sampleBtn2 = document.getElementById("sampleBtn2");
-const fileInput = document.getElementById("fileInput");
-const fileInput2 = document.getElementById("fileInput2");
-const roundHud = document.getElementById("roundHud");
-const roundLabel = document.getElementById("roundLabel");
-const roundClock = document.getElementById("roundClock");
-const roundFill = document.getElementById("roundFill");
-const beatPulse = document.getElementById("beatPulse");
-const clipInput = document.getElementById("clipInput");
-const clipStatus = document.getElementById("clipStatus");
+const ytBtn = document.getElementById("ytBtn");
+const hintText = document.getElementById("hintText");
+const nowDancing = document.getElementById("nowDancing");
 
 const CONNECTIONS = [
   [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
@@ -35,124 +27,61 @@ let lastVideoTime = -1;
 let lastToastKey = "";
 let lastToastAt = 0;
 let loopStarted = false;
-let objectUrl = "";
-let sampleCache = {};
-let sampleAnimId = 0;
-let samplePlaying = false;
-const sampleCanvas = document.createElement("canvas");
-const sampleCtx = sampleCanvas.getContext("2d");
 const poseHist = { hipY: [], hipX: [], t: [] };
 let currentDance = "ardah";
-const ROUND_MS = 15000;
-const AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
-let roundActive = false;
-let roundFrozen = false;
-let roundEndsAt = 0;
-let roundRaf = 0;
-let lastLiveScore = 0;
-let audioCtx = null;
-let masterGain = null;
-let musicBus = null;
-let noiseBuf = null;
-let musicMuted = false;
-let scheduledNodes = [];
-const LOUD_GAIN = 2.15;
-const userClips = {};
-let clipPlayer = null;
 
 const DANCES = {
   ardah: {
-    short: "Ardah",
-    label: "Ardah · العرضة",
+    label: "العرضة · Ardah",
     hint: "Proud upright chest, a slightly bent bounce in the knees, a raised sword arm, and a steady drum rhythm.",
     review: reviewArdah,
-    frames: [
-      "samples/ardah-frame-1.png",
-      "samples/ardah-frame-2.png",
-      "samples/ardah-frame-3.png",
-      "samples/ardah-frame-4.png",
-    ],
-    order: [0, 1, 2, 3, 2, 1],
-    motion: { x: 8, y: 18 },
-    interval: 220,
-    bpm: 96,
     ytQuery: "العرضة النجدية اليوم الوطني",
   },
   mezmar: {
-    short: "Mezmar",
-    label: "Mezmar · المزمار",
+    label: "المزمار · Mezmar",
     hint: "Hijazi stick dance: wrists around chest height as if holding or clapping a stick, athletic knees, and a driving bounce.",
     review: reviewMezmar,
-    frames: ["samples/mezmar-frame-1.png", "samples/mezmar-frame-2.png"],
-    order: [0, 1],
-    motion: { x: 4, y: 40 },
-    interval: 180,
-    bpm: 126,
     ytQuery: "رقصة المزمار الحجازي",
   },
   tasheer: {
-    short: "Ta'sheer",
-    label: "Ta'sheer · التعشير",
+    label: "التعشير · Tasheer",
     hint: "Rifle high, then explode upward. Look for an overhead arm and a real jump — bigger hip travel than Ardah.",
     review: reviewTasheer,
-    frames: ["samples/tasheer-frame-1.png", "samples/tasheer-frame-2.png"],
-    order: [0, 1],
-    motion: { x: 6, y: 96 },
-    interval: 200,
-    bpm: 108,
     ytQuery: "رقصة التعشير الحجاز",
   },
   khatwa: {
-    short: "Khatwa",
-    label: "Khatwa · الخطوة",
+    label: "الخطوة · Khatwa",
     hint: "Southern stepping dance: stay tall, keep a light bounce, and travel side to side with the line.",
     review: reviewKhatwa,
-    frames: ["samples/khatwa-frame-1.png", "samples/khatwa-frame-2.png"],
-    order: [0, 1],
-    motion: { x: 78, y: 18 },
-    interval: 240,
-    bpm: 104,
     ytQuery: "رقصة الخطوة الجنوبية",
   },
   samri: {
-    short: "Samri",
-    label: "Samri · السامري",
+    label: "السامري · Samri",
     hint: "Night gathering energy: chest-height claps, a smaller bounce, no sword overhead.",
     review: reviewSamri,
-    frames: ["samples/samri-frame-1.png", "samples/samri-frame-2.png"],
-    order: [0, 1],
-    motion: { x: 6, y: 16 },
-    interval: 260,
-    bpm: 76,
     ytQuery: "السامري النجدي",
   },
 };
 
-const hintText = document.getElementById("hintText");
-const nowDancing = document.getElementById("nowDancing");
-
 startBtn.addEventListener("click", startCamera);
 startBtn2.addEventListener("click", startCamera);
-sampleBtn.addEventListener("click", startDanceSample);
-sampleBtn2.addEventListener("click", startDanceSample);
-fileInput.addEventListener("change", onFilePicked);
-fileInput2.addEventListener("change", onFilePicked);
 document.getElementById("danceNav").addEventListener("click", (event) => {
   const btn = event.target.closest("[data-dance]");
   if (!btn) return;
   setDance(btn.dataset.dance);
 });
-for (const btn of document.querySelectorAll("[data-mute]")) {
-  btn.addEventListener("click", toggleMute);
+syncMusicLink();
+
+function youtubeSearchUrl(query) {
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
 }
-if (clipInput) clipInput.addEventListener("change", onUserClipPicked);
-updateSampleButtons();
-updateClipStatus();
+
+function syncMusicLink() {
+  if (ytBtn) ytBtn.href = youtubeSearchUrl(DANCES[currentDance].ytQuery);
+}
 
 function setDance(id) {
   if (!DANCES[id] || id === currentDance) return;
-  const restartSample = samplePlaying;
-  abortRound();
   currentDance = id;
   poseHist.hipY.length = 0;
   poseHist.hipX.length = 0;
@@ -160,56 +89,10 @@ function setDance(id) {
   lastToastKey = "";
   nowDancing.textContent = DANCES[id].label;
   hintText.textContent = DANCES[id].hint;
-  updateSampleButtons();
-  updateClipStatus();
+  syncMusicLink();
   for (const chip of document.querySelectorAll(".dance-chip")) {
     chip.classList.toggle("is-on", chip.dataset.dance === id);
   }
-  if (restartSample) startDanceSample();
-}
-
-function sampleButtonLabel(id, long) {
-  const name = DANCES[id].short;
-  return long ? `جولة ${name} — ١٥ ثانية` : `جولة ${name}`;
-}
-
-function updateSampleButtons() {
-  sampleBtn.textContent = sampleButtonLabel(currentDance, true);
-  sampleBtn2.textContent = sampleButtonLabel(currentDance, false);
-}
-
-function youtubeSearchUrl(query) {
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
-}
-
-function updateClipStatus() {
-  const dance = DANCES[currentDance];
-  const href = youtubeSearchUrl(dance.ytQuery);
-  for (const a of document.querySelectorAll("[data-yt-current]")) a.href = href;
-  if (!clipStatus) return;
-  const clip = userClips[currentDance];
-  clipStatus.textContent = clip
-    ? `مقطعك جاهز: ${clip.name}`
-    : "إيقاع نخوة — أضف مقطعك، أو افتح يوتيوب في تاب جديد";
-}
-
-function onUserClipPicked(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
-  const prev = userClips[currentDance];
-  if (prev) URL.revokeObjectURL(prev.url);
-  userClips[currentDance] = { url: URL.createObjectURL(file), name: file.name };
-  updateClipStatus();
-  maybeToast("تم حفظ مقطعك لهذه الرقصة", "ok", "clip-ok");
-}
-
-function onFilePicked(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
-  abortRound();
-  if (objectUrl) URL.revokeObjectURL(objectUrl);
-  objectUrl = URL.createObjectURL(file);
-  startVideoFile(objectUrl, true);
 }
 
 async function ensurePose() {
@@ -227,14 +110,7 @@ async function ensurePose() {
   });
 }
 
-function stopSampleClip() {
-  samplePlaying = false;
-  if (sampleAnimId) cancelAnimationFrame(sampleAnimId);
-  sampleAnimId = 0;
-}
-
 function stopCamera() {
-  stopSampleClip();
   const stream = video.srcObject;
   if (stream) {
     for (const track of stream.getTracks()) track.stop();
@@ -242,563 +118,34 @@ function stopCamera() {
   video.srcObject = null;
 }
 
-function arNum(n) {
-  return String(n).replace(/\d/g, (d) => AR_DIGITS[d]);
-}
-
-function toggleMute() {
-  musicMuted = !musicMuted;
-  if (masterGain && audioCtx) {
-    masterGain.gain.setValueAtTime(musicMuted ? 0 : LOUD_GAIN, audioCtx.currentTime);
-  }
-  if (clipPlayer) clipPlayer.muted = musicMuted;
-  for (const btn of document.querySelectorAll("[data-mute]")) {
-    btn.setAttribute("aria-pressed", musicMuted ? "true" : "false");
-    btn.textContent = musicMuted ? "صامت" : "صوت مفتوح";
-  }
-}
-
-function makeNoiseBuffer(ctx, seconds) {
-  const n = Math.floor(ctx.sampleRate * seconds);
-  const buf = ctx.createBuffer(1, n, ctx.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < n; i++) data[i] = Math.random() * 2 - 1;
-  return buf;
-}
-
-function makeImpulse(ctx, seconds) {
-  const n = Math.floor(ctx.sampleRate * seconds);
-  const buf = ctx.createBuffer(2, n, ctx.sampleRate);
-  for (let c = 0; c < 2; c++) {
-    const data = buf.getChannelData(c);
-    for (let i = 0; i < n; i++) {
-      data[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 2.5;
-    }
-  }
-  return buf;
-}
-
-function ensureAudio() {
-  if (!audioCtx) {
-    audioCtx = new AudioContext();
-    noiseBuf = makeNoiseBuffer(audioCtx, 1);
-    masterGain = audioCtx.createGain();
-    masterGain.gain.value = musicMuted ? 0 : LOUD_GAIN;
-    const comp = audioCtx.createDynamicsCompressor();
-    comp.threshold.value = -18;
-    comp.ratio.value = 2.4;
-    const conv = audioCtx.createConvolver();
-    conv.buffer = makeImpulse(audioCtx, 1.1);
-    const wet = audioCtx.createGain();
-    wet.gain.value = 0.2;
-    const dry = audioCtx.createGain();
-    dry.gain.value = 0.88;
-    musicBus = audioCtx.createGain();
-    musicBus.connect(dry);
-    musicBus.connect(conv);
-    conv.connect(wet);
-    dry.connect(comp);
-    wet.connect(comp);
-    comp.connect(masterGain);
-    masterGain.connect(audioCtx.destination);
-  }
-  if (audioCtx.state === "suspended") audioCtx.resume();
-  return audioCtx;
-}
-
-function trackNode(node) {
-  scheduledNodes.push(node);
-}
-
-function stopMusic() {
-  if (clipPlayer) {
-    clipPlayer.pause();
-    clipPlayer.removeAttribute("src");
-    clipPlayer.load();
-    clipPlayer = null;
-  }
-  const now = audioCtx ? audioCtx.currentTime : 0;
-  for (const node of scheduledNodes) {
-    try {
-      node.stop(now);
-    } catch {
-      /* already stopped */
-    }
-    try {
-      node.disconnect();
-    } catch {
-      /* already disconnected */
-    }
-  }
-  scheduledNodes = [];
-}
-
-function noiseHit(time, { dur = 0.08, gain = 0.3, hp = 800, lp = 4000 } = {}) {
-  const src = audioCtx.createBufferSource();
-  src.buffer = noiseBuf;
-  const hpF = audioCtx.createBiquadFilter();
-  hpF.type = "highpass";
-  hpF.frequency.value = hp;
-  const lpF = audioCtx.createBiquadFilter();
-  lpF.type = "lowpass";
-  lpF.frequency.value = lp;
-  const g = audioCtx.createGain();
-  g.gain.setValueAtTime(Math.max(gain, 0.001), time);
-  g.gain.exponentialRampToValueAtTime(0.001, time + dur);
-  src.connect(hpF);
-  hpF.connect(lpF);
-  lpF.connect(g);
-  g.connect(musicBus);
-  src.start(time);
-  src.stop(time + dur);
-  trackNode(src);
-}
-
-function dum(time, freq = 78, gain = 1.35, dur = 0.28) {
-  const osc = audioCtx.createOscillator();
-  const osc2 = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  osc.type = "sine";
-  osc2.type = "triangle";
-  osc.frequency.setValueAtTime(freq * 2.1, time);
-  osc.frequency.exponentialRampToValueAtTime(freq, time + 0.04);
-  osc2.frequency.setValueAtTime(freq * 3.2, time);
-  osc2.frequency.exponentialRampToValueAtTime(freq * 1.35, time + 0.03);
-  g.gain.setValueAtTime(gain, time);
-  g.gain.exponentialRampToValueAtTime(0.001, time + dur);
-  osc.connect(g);
-  osc2.connect(g);
-  g.connect(musicBus);
-  osc.start(time);
-  osc2.start(time);
-  osc.stop(time + dur);
-  osc2.stop(time + dur);
-  trackNode(osc);
-  trackNode(osc2);
-  noiseHit(time, { dur: 0.05, gain: gain * 0.18, hp: 200, lp: 900 });
-}
-
-function tek(time, gain = 0.55) {
-  noiseHit(time, { dur: 0.05, gain, hp: 1800, lp: 7000 });
-}
-
-function clap(time, gain = 0.95) {
-  noiseHit(time, { dur: 0.09, gain, hp: 700, lp: 3600 });
-  noiseHit(time + 0.014, { dur: 0.07, gain: gain * 0.5, hp: 1100, lp: 5200 });
-}
-
-function stick(time) {
-  noiseHit(time, { dur: 0.035, gain: 0.36, hp: 2400, lp: 9000 });
-  const osc = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  osc.type = "square";
-  osc.frequency.value = 1180;
-  g.gain.setValueAtTime(0.07, time);
-  g.gain.exponentialRampToValueAtTime(0.001, time + 0.03);
-  osc.connect(g);
-  g.connect(musicBus);
-  osc.start(time);
-  osc.stop(time + 0.035);
-  trackNode(osc);
-}
-
-function shout(time) {
-  const osc = audioCtx.createOscillator();
-  const bp = audioCtx.createBiquadFilter();
-  const g = audioCtx.createGain();
-  osc.type = "sawtooth";
-  osc.frequency.setValueAtTime(330, time);
-  osc.frequency.exponentialRampToValueAtTime(175, time + 0.18);
-  bp.type = "bandpass";
-  bp.frequency.value = 680;
-  bp.Q.value = 4.5;
-  g.gain.setValueAtTime(0.16, time);
-  g.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
-  osc.connect(bp);
-  bp.connect(g);
-  g.connect(musicBus);
-  osc.start(time);
-  osc.stop(time + 0.22);
-  trackNode(osc);
-  noiseHit(time, { dur: 0.16, gain: 0.1, hp: 280, lp: 1500 });
-}
-
-function jumpSweep(time, dur = 0.26) {
-  const osc = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(110, time);
-  osc.frequency.exponentialRampToValueAtTime(720, time + dur);
-  g.gain.setValueAtTime(0.001, time);
-  g.gain.exponentialRampToValueAtTime(0.14, time + dur * 0.75);
-  g.gain.exponentialRampToValueAtTime(0.001, time + dur);
-  osc.connect(g);
-  g.connect(musicBus);
-  osc.start(time);
-  osc.stop(time + dur);
-  trackNode(osc);
-}
-
-function startDrone(t0, dur, freq, gain) {
-  const osc = audioCtx.createOscillator();
-  const osc2 = audioCtx.createOscillator();
-  const lfo = audioCtx.createOscillator();
-  const lfoG = audioCtx.createGain();
-  const bp = audioCtx.createBiquadFilter();
-  const g = audioCtx.createGain();
-  osc.type = "sawtooth";
-  osc2.type = "sawtooth";
-  osc.frequency.value = freq;
-  osc2.frequency.value = freq * 1.005;
-  lfo.frequency.value = 5.4;
-  lfoG.gain.value = 7;
-  lfo.connect(lfoG);
-  lfoG.connect(osc.frequency);
-  bp.type = "bandpass";
-  bp.frequency.value = freq * 2.2;
-  bp.Q.value = 6;
-  g.gain.setValueAtTime(0.001, t0);
-  g.gain.exponentialRampToValueAtTime(gain, t0 + 0.25);
-  g.gain.setValueAtTime(gain, t0 + dur - 0.35);
-  g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
-  osc.connect(bp);
-  osc2.connect(bp);
-  bp.connect(g);
-  g.connect(musicBus);
-  osc.start(t0);
-  osc2.start(t0);
-  lfo.start(t0);
-  osc.stop(t0 + dur);
-  osc2.stop(t0 + dur);
-  lfo.stop(t0 + dur);
-  trackNode(osc);
-  trackNode(osc2);
-  trackNode(lfo);
-}
-
-function forBeats(t0, bpm, fn) {
-  const beat = 60 / bpm;
-  const end = t0 + ROUND_MS / 1000;
-  let t = t0;
-  let i = 0;
-  while (t < end - 0.02) {
-    fn(t, i, beat);
-    t += beat;
-    i += 1;
-  }
-}
-
-function playUserClip(url) {
-  const ctx = ensureAudio();
-  clipPlayer = new Audio(url);
-  clipPlayer.volume = 1;
-  clipPlayer.muted = musicMuted;
-  try {
-    const src = ctx.createMediaElementSource(clipPlayer);
-    src.connect(musicBus);
-  } catch {
-    /* element already routed */
-  }
-  const play = clipPlayer.play();
-  if (play && play.catch) play.catch(() => {});
-}
-
-// Original Web Audio folk-percussion beds (not commercial recordings).
-function playDanceClip(id) {
-  stopMusic();
-  const ctx = ensureAudio();
-  const custom = userClips[id];
-  if (custom) {
-    playUserClip(custom.url);
-    return;
-  }
-  const t0 = ctx.currentTime + 0.03;
-  const schedulers = {
-    ardah: scheduleArdah,
-    mezmar: scheduleMezmar,
-    tasheer: scheduleTasheer,
-    khatwa: scheduleKhatwa,
-    samri: scheduleSamri,
-  };
-  (schedulers[id] || scheduleArdah)(t0);
-}
-
-function scheduleArdah(t0) {
-  forBeats(t0, 96, (t, i, beat) => {
-    const step = i % 4;
-    if (step === 0) dum(t, 72, 1.55, 0.34);
-    else if (step === 2) dum(t, 86, 1.15, 0.24);
-    else tek(t, 0.55);
-    tek(t + beat * 0.5, 0.28);
-    if (i % 8 === 0 && i > 0) shout(t);
-  });
-}
-
-function scheduleMezmar(t0) {
-  startDrone(t0, ROUND_MS / 1000, 294, 0.22);
-  startDrone(t0, ROUND_MS / 1000, 440, 0.12);
-  forBeats(t0, 126, (t, i, beat) => {
-    const step = i % 4;
-    stick(t);
-    stick(t + beat * 0.5);
-    if (step === 0) dum(t, 90, 1.2, 0.22);
-    else if (step === 2) dum(t, 130, 0.85, 0.16);
-    else tek(t, 0.4);
-  });
-}
-
-function scheduleTasheer(t0) {
-  forBeats(t0, 108, (t, i, beat) => {
-    const step = i % 4;
-    if (step === 3) {
-      jumpSweep(t - beat * 0.28);
-      dum(t, 64, 1.6, 0.4);
-      shout(t);
-    } else {
-      tek(t, 0.35);
-      dum(t, 110, 0.45, 0.12);
-    }
-  });
-}
-
-function scheduleKhatwa(t0) {
-  forBeats(t0, 104, (t, i, beat) => {
-    const left = i % 2 === 0;
-    dum(t, left ? 148 : 188, 1.05, 0.18);
-    tek(t + beat * 0.5, 0.32);
-    if (i % 4 === 0) dum(t, 80, 0.7, 0.22);
-  });
-}
-
-function scheduleSamri(t0) {
-  startDrone(t0, ROUND_MS / 1000, 196, 0.1);
-  forBeats(t0, 76, (t, i, beat) => {
-    const step = i % 4;
-    if (step === 0) dum(t, 70, 1.15, 0.38);
-    if (step === 1 || step === 3) clap(t, 1.05);
-    if (step === 2) clap(t + beat * 0.5, 0.65);
-  });
-}
-
-function updateRoundHud(leftMs) {
-  const left = Math.max(0, leftMs);
-  const secs = Math.ceil(left / 1000);
-  roundClock.textContent = arNum(secs);
-  roundFill.style.width = `${((ROUND_MS - left) / ROUND_MS) * 100}%`;
-  if (beatPulse) {
-    if (!roundActive) {
-      beatPulse.classList.remove("is-on", "is-down");
-    } else {
-      const bpm = DANCES[currentDance].bpm || 96;
-      const elapsed = (ROUND_MS - left) / 1000;
-      const beat = 60 / bpm;
-      const i = Math.floor(elapsed / beat);
-      const frac = elapsed / beat - i;
-      const down = i % 4 === 0;
-      beatPulse.classList.toggle("is-on", frac < 0.22);
-      beatPulse.classList.toggle("is-down", down && frac < 0.28);
-    }
-  }
-  if (!roundActive && roundFrozen) {
-    roundLabel.textContent = "الجولة انتهت";
-    roundClock.textContent = "٠";
-    roundFill.style.width = "100%";
-  }
-}
-
-function abortRound() {
-  roundActive = false;
-  roundFrozen = false;
-  if (roundRaf) cancelAnimationFrame(roundRaf);
-  roundRaf = 0;
-  stopMusic();
-  roundHud.hidden = true;
-}
-
-function endGameRound() {
-  if (!roundActive) return;
-  roundActive = false;
-  roundFrozen = true;
-  if (roundRaf) cancelAnimationFrame(roundRaf);
-  roundRaf = 0;
-  stopMusic();
-  stopSampleClip();
-  updateRoundHud(0);
-  const n = Math.round(lastLiveScore);
-  setPanel(n, [
-    `الجولة انتهت — تقييمك ${arNum(n)}`,
-    "اضغط ابدأ أو العينة لجولة جديدة.",
-  ]);
-  maybeToast("الجولة انتهت", "ok", "round-end");
-}
-
-function startGameRound() {
-  roundActive = true;
-  roundFrozen = false;
-  lastLiveScore = 0;
-  if (roundRaf) cancelAnimationFrame(roundRaf);
-  roundHud.hidden = false;
-  roundLabel.textContent = `جولة ${DANCES[currentDance].label}`;
-  playDanceClip(currentDance);
-  roundEndsAt = performance.now() + ROUND_MS;
-  updateRoundHud(ROUND_MS);
-  const tick = () => {
-    if (!roundActive) return;
-    const left = roundEndsAt - performance.now();
-    if (left <= 0) {
-      endGameRound();
-      return;
-    }
-    updateRoundHud(left);
-    roundRaf = requestAnimationFrame(tick);
-  };
-  roundRaf = requestAnimationFrame(tick);
-}
-
 async function startCamera() {
-  startGameRound();
   startBtn.disabled = true;
-  startBtn.textContent = "Loading pose model…";
+  startBtn2.disabled = true;
+  startBtn.textContent = "…";
   try {
     await ensurePose();
     stopCamera();
-    video.classList.remove("from-file");
-    video.controls = false;
-    video.loop = false;
-    video.removeAttribute("src");
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
       audio: false,
     });
     video.srcObject = stream;
     await video.play();
-    beginPlayback();
-  } catch (err) {
-    abortRound();
+    permission.hidden = true;
     startBtn.disabled = false;
-    startBtn.textContent = "Try again";
-    maybeToast("Camera or model failed to start. Use localhost, not a file:// page.", "bad", "cam-fail");
-    console.error(err);
-  }
-}
-
-async function loadSampleFrames(id) {
-  if (sampleCache[id]) return sampleCache[id];
-  const dance = DANCES[id];
-  sampleCache[id] = await Promise.all(
-    dance.frames.map(
-      (src) =>
-        new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => resolve(img);
-          img.onerror = () => reject(new Error(`Missing ${src}`));
-          img.src = src;
-        })
-    )
-  );
-  return sampleCache[id];
-}
-
-function drawSampleFrame(img, phase, dance) {
-  const w = sampleCanvas.width;
-  const h = sampleCanvas.height;
-  sampleCtx.fillStyle = "#1a110c";
-  sampleCtx.fillRect(0, 0, w, h);
-  const scale = Math.min(w / img.width, h / img.height) * 0.92;
-  const dw = img.width * scale;
-  const dh = img.height * scale;
-  const ox = Math.sin(phase) * dance.motion.x;
-  const oy = -Math.abs(Math.sin(phase)) * dance.motion.y;
-  sampleCtx.drawImage(img, (w - dw) / 2 + ox, (h - dh) / 2 + oy, dw, dh);
-}
-
-async function startDanceSample() {
-  const danceId = currentDance;
-  const dance = DANCES[danceId];
-  startGameRound();
-  startBtn.disabled = true;
-  sampleBtn.textContent = `Loading ${dance.short} clip…`;
-  try {
-    await ensurePose();
-    const images = await loadSampleFrames(danceId);
-    stopCamera();
-    poseHist.hipY.length = 0;
-    poseHist.hipX.length = 0;
-    poseHist.t.length = 0;
-    lastVideoTime = -1;
-    sampleCanvas.width = 720;
-    sampleCanvas.height = 960;
-    drawSampleFrame(images[0], 0, dance);
-    video.classList.add("from-file");
-    video.controls = false;
-    video.loop = false;
-    video.muted = true;
-    video.removeAttribute("src");
-    video.srcObject = sampleCanvas.captureStream(20);
-    await video.play();
-
-    let frame = 0;
-    let lastSwap = 0;
-    let phase = 0;
-    samplePlaying = true;
-    const tick = (time) => {
-      if (!samplePlaying) return;
-      phase += 0.12;
-      if (time - lastSwap > dance.interval) {
-        lastSwap = time;
-        frame = (frame + 1) % dance.order.length;
-      }
-      drawSampleFrame(images[dance.order[frame]], phase, dance);
-      sampleAnimId = requestAnimationFrame(tick);
-    };
-    sampleAnimId = requestAnimationFrame(tick);
-    beginPlayback();
-  } catch (err) {
-    abortRound();
-    startBtn.disabled = false;
-    updateSampleButtons();
-    maybeToast(`Could not load the ${dance.short} sample.`, "bad", "vid-fail");
-    console.error(err);
-  }
-}
-
-async function startVideoFile(src, isBlob) {
-  startBtn.disabled = true;
-  sampleBtn.textContent = "Loading clip…";
-  try {
-    await ensurePose();
-    stopCamera();
-    poseHist.hipY.length = 0;
-    poseHist.hipX.length = 0;
-    poseHist.t.length = 0;
-    lastVideoTime = -1;
-    video.classList.add("from-file");
-    video.controls = true;
-    video.loop = true;
-    video.muted = true;
-    if (!isBlob && objectUrl) {
-      URL.revokeObjectURL(objectUrl);
-      objectUrl = "";
+    startBtn2.disabled = false;
+    startBtn.textContent = "ابدأ";
+    startBtn2.textContent = "الكاميرا";
+    if (!loopStarted) {
+      loopStarted = true;
+      requestAnimationFrame(loop);
     }
-    video.src = src;
-    await video.play();
-    beginPlayback();
   } catch (err) {
     startBtn.disabled = false;
-    updateSampleButtons();
-    maybeToast("Could not play that video. Try another MP4/WebM file.", "bad", "vid-fail");
+    startBtn2.disabled = false;
+    startBtn.textContent = "ابدأ";
+    maybeToast("ما قدرت أفتح الكاميرا. جرّب مرة ثانية.", "bad", "cam-fail");
     console.error(err);
-  }
-}
-
-function beginPlayback() {
-  permission.hidden = true;
-  updateSampleButtons();
-  startBtn.disabled = false;
-  startBtn.textContent = "Start camera";
-  if (!loopStarted) {
-    loopStarted = true;
-    requestAnimationFrame(loop);
   }
 }
 
@@ -818,27 +165,13 @@ function loop() {
 function drawAndCoach(result) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const landmarks = result.landmarks?.[0];
-  const endedCues = [
-    `الجولة انتهت — تقييمك ${arNum(Math.round(lastLiveScore))}`,
-    "اضغط ابدأ أو العينة لجولة جديدة.",
-  ];
   if (!landmarks) {
-    if (roundFrozen) {
-      setPanel(lastLiveScore, endedCues);
-      return;
-    }
-    setPanel(0, ["No full body found in this frame. Use a clip where the dancer is clearly visible."]);
-    maybeToast("No body in this frame", "bad", "missing");
+    setPanel(0, ["الجسم مو واضح في الإطار. تراجع خطوة."]);
+    maybeToast("الجسم مو في الإطار", "bad", "missing");
     return;
   }
-
   drawSkeleton(landmarks);
-  if (roundFrozen) {
-    setPanel(lastLiveScore, endedCues);
-    return;
-  }
   const review = DANCES[currentDance].review(landmarks);
-  if (roundActive) lastLiveScore = review.score;
   setPanel(review.score, review.cues);
   maybeToast(review.popup.text, review.popup.tone, review.popup.key);
 }
@@ -1002,7 +335,7 @@ function reviewTasheer(lm) {
   }
   if (!m.overhead && !m.leftArmUp && !m.rightArmUp) {
     score -= 30;
-    cues.push("Lift the rifle. Ta'sheer wants an arm high, then the jump.");
+    cues.push("Lift the rifle. Tasheer wants an arm high, then the jump.");
   }
   if (m.bodyVisible && !jump) {
     score -= 30;
@@ -1018,9 +351,9 @@ function reviewTasheer(lm) {
   else if (!m.overhead && !m.leftArmUp && !m.rightArmUp) popup = { text: "Rifle arm up", tone: "warn", key: "arm" };
   else if (!jump) popup = { text: "Jump with it", tone: "warn", key: "rhythm" };
   else if (!kneesReady) popup = { text: "Load the knees", tone: "warn", key: "knees" };
-  else popup = { text: "That's Ta'sheer height", tone: "ok", key: "good" };
+  else popup = { text: "That's Tasheer height", tone: "ok", key: "good" };
 
-  return finish(score, cues, popup, "Clean Ta'sheer — height and rifle together.");
+  return finish(score, cues, popup, "Clean Tasheer — height and rifle together.");
 }
 
 function reviewKhatwa(lm) {

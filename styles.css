@@ -14,6 +14,10 @@
   box-sizing: border-box;
 }
 
+html {
+  direction: rtl;
+}
+
 html, body {
   margin: 0;
   min-height: 100%;
@@ -23,6 +27,14 @@ html, body {
     var(--bg);
   color: var(--cream);
   font-family: "Cairo", "Segoe UI", Tahoma, sans-serif;
+  text-align: start;
+}
+
+[lang="en"],
+.tagline-en {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
 }
 
 .sand {
@@ -106,6 +118,7 @@ html, body {
   font-weight: 700;
   font-size: 1.45rem;
   font-family: "Noto Naskh Arabic", "Cairo", serif;
+  text-align: start;
 }
 
 .tagline {
@@ -114,6 +127,7 @@ html, body {
   font-size: 1.38rem;
   line-height: 1.65;
   font-family: "Noto Naskh Arabic", "Cairo", serif;
+  text-align: start;
 }
 
 .tagline-en {
@@ -157,54 +171,27 @@ button {
 }
 
 .dances {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
-  overflow-x: auto;
   padding: 18px 2px 4px;
   margin-top: 8px;
 }
 
-.dance-pick {
-  flex: 1 0 8.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.yt-chip,
-.yt-panel {
-  display: block;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 999px;
-  padding: 7px 10px;
-  font-size: 0.98rem;
-  font-weight: 800;
-  font-family: "Noto Naskh Arabic", "Cairo", serif;
-  letter-spacing: 0;
-  line-height: 1.35;
-  color: var(--ink);
-  background: linear-gradient(180deg, #e6c98a, var(--gold));
-}
-
-.yt-panel {
-  margin: 0 0 12px;
-  padding: 10px 16px;
-  font-size: 1.12rem;
-}
-
 .dance-chip {
   width: 100%;
+  min-height: 8.25rem;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: 12px 14px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 10px;
   border-radius: 14px;
   background: rgba(43, 28, 20, 0.94);
   color: var(--cream);
   border: 1px solid rgba(212, 176, 106, 0.28);
-  text-align: left;
+  text-align: center;
 }
 
 .dance-chip strong {
@@ -214,8 +201,9 @@ button {
 .dance-chip small {
   font-weight: 500;
   opacity: 0.8;
-  font-size: 1.12rem;
+  font-size: 1.05rem;
   font-family: "Noto Naskh Arabic", "Cairo", serif;
+  white-space: nowrap;
 }
 
 .dance-ar {
@@ -237,6 +225,7 @@ button {
   font-weight: 700;
   font-size: 1.4rem;
   font-family: "Noto Naskh Arabic", "Cairo", serif;
+  text-align: start;
 }
 
 .stage {
@@ -269,17 +258,8 @@ video, canvas {
   object-fit: cover;
 }
 
-video.from-file,
-video.from-file + canvas {
-  object-fit: contain;
-}
-
-video.from-file {
-  background: #140c08;
-}
-
-video:not(.from-file),
-.video-wrap:has(video:not(.from-file)) > canvas {
+video,
+.video-wrap > canvas {
   transform: scaleX(-1);
 }
 
@@ -290,39 +270,28 @@ video:not(.from-file),
   gap: 10px;
 }
 
-.file-btn {
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-  border-radius: 999px;
-  padding: 12px 22px;
-  font-size: 1.22rem;
-  font-weight: 700;
-  color: var(--ink);
-  background: linear-gradient(180deg, #e6c98a, var(--gold));
-}
-
-button.ghost,
-.file-btn.ghost {
-  background: transparent;
-  color: var(--cream);
-  border: 1px solid rgba(212, 176, 106, 0.55);
-}
-
-.fineprint {
-  margin: 0;
-  max-width: 36rem;
-  font-size: 1.18rem;
-  opacity: 0.8;
-  line-height: 1.55;
-  font-family: "Noto Naskh Arabic", "Cairo", serif;
-}
-
 .source-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px 12px;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+.music-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 1.18rem;
+  font-weight: 700;
+  font-family: "Noto Naskh Arabic", "Cairo", serif;
+  letter-spacing: 0;
+  color: var(--cream);
+  background: transparent;
+  border: 1px solid rgba(212, 176, 106, 0.55);
 }
 
 canvas {
@@ -374,103 +343,6 @@ canvas {
 .toast.warn { border-color: var(--warn); color: var(--warn); }
 .toast.bad { border-color: var(--bad); color: var(--bad); }
 
-.round-hud {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(26, 17, 12, 0.82);
-  border: 1px solid rgba(212, 176, 106, 0.45);
-}
-
-.round-hud[hidden] {
-  display: none;
-}
-
-.round-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  color: var(--gold);
-  font-family: "Noto Naskh Arabic", "Cairo", serif;
-  font-weight: 700;
-  font-size: 1.18rem;
-  letter-spacing: 0;
-}
-
-.round-track {
-  height: 7px;
-  overflow: hidden;
-  border-radius: 99px;
-  background: rgba(20, 12, 8, 0.85);
-  border: 1px solid rgba(212, 176, 106, 0.4);
-}
-
-.round-fill {
-  height: 100%;
-  width: 0%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--brown), var(--gold));
-}
-
-.mute-btn {
-  align-self: flex-start;
-  pointer-events: auto;
-  padding: 6px 14px;
-  font-size: 1.05rem;
-  font-family: "Noto Naskh Arabic", "Cairo", serif;
-  letter-spacing: 0;
-  color: var(--cream);
-  background: transparent;
-  border: 1px solid rgba(212, 176, 106, 0.55);
-}
-
-.mute-btn[aria-pressed="true"] {
-  color: var(--warn);
-}
-
-.beat-pulse {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.7rem;
-  height: 1.7rem;
-  border-radius: 50%;
-  color: var(--ink);
-  background: var(--gold);
-  font-size: 0.85rem;
-  opacity: 0.45;
-  transform: scale(0.82);
-}
-
-.beat-pulse.is-on {
-  opacity: 1;
-  transform: scale(1.18);
-  box-shadow: 0 0 14px rgba(212, 176, 106, 0.85);
-}
-
-.beat-pulse.is-down {
-  background: #f0d9a0;
-  transform: scale(1.32);
-}
-
-.clip-status {
-  margin: 0 0 12px;
-  color: var(--cream);
-  font-family: "Noto Naskh Arabic", "Cairo", serif;
-  font-size: 1.12rem;
-  line-height: 1.45;
-  letter-spacing: 0;
-  opacity: 0.9;
-}
-
 .panel {
   padding: 20px;
 }
@@ -479,7 +351,8 @@ canvas {
   display: block;
   color: var(--gold);
   font-size: 1.18rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
+  text-align: start;
 }
 
 .score-block strong {
@@ -489,8 +362,9 @@ canvas {
 
 .cues {
   margin: 12px 0 20px;
-  padding-left: 18px;
+  padding-inline-start: 18px;
   font-size: 1.25rem;
+  text-align: start;
 }
 
 .cues li {
@@ -502,6 +376,7 @@ canvas {
   font-size: 1.38rem;
   color: var(--gold);
   font-family: "Noto Naskh Arabic", "Cairo", serif;
+  text-align: start;
 }
 
 .hint p {
@@ -523,6 +398,7 @@ canvas {
   font-family: "Noto Naskh Arabic", serif;
   font-size: 1.4rem;
   font-weight: 700;
+  text-align: start;
 }
 
 .nd-note p {
@@ -531,6 +407,7 @@ canvas {
   line-height: 1.55;
   opacity: 0.9;
   font-family: "Noto Naskh Arabic", "Cairo", serif;
+  text-align: start;
 }
 
 .site-foot {
@@ -557,8 +434,18 @@ canvas {
     grid-template-columns: 1fr;
   }
 
+  .dances {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .topbar {
     flex-direction: column;
-    text-align: center;
+    text-align: start;
+  }
+}
+
+@media (max-width: 520px) {
+  .dances {
+    grid-template-columns: 1fr;
   }
 }
