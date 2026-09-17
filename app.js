@@ -31,6 +31,8 @@ let currentDance = "ardah";
 
 const DANCES = {
   ardah: {
+    nameAr: "العرضة",
+    nameEn: "Ardah",
     label: "العرضة · Ardah",
     hint: "Proud upright chest, a slightly bent bounce in the knees, a raised sword arm, and a steady drum rhythm.",
     review: reviewArdah,
@@ -39,6 +41,8 @@ const DANCES = {
     exampleAlt: "مثال العرضة",
   },
   mezmar: {
+    nameAr: "المزمار",
+    nameEn: "Mezmar",
     label: "المزمار · Mezmar",
     hint: "Hijazi stick dance: wrists around chest height as if holding or clapping a stick, athletic knees, and a driving bounce.",
     review: reviewMezmar,
@@ -47,6 +51,8 @@ const DANCES = {
     exampleAlt: "مثال المزمار",
   },
   tasheer: {
+    nameAr: "التعشير",
+    nameEn: "Tasheer",
     label: "التعشير · Tasheer",
     hint: "Rifle high, then explode upward. Look for an overhead arm and a real jump — bigger hip travel than Ardah.",
     review: reviewTasheer,
@@ -55,6 +61,8 @@ const DANCES = {
     exampleAlt: "مثال التعشير",
   },
   khatwa: {
+    nameAr: "الخطوة",
+    nameEn: "Khatwa",
     label: "الخطوة · Khatwa",
     hint: "Southern stepping dance: stay tall, keep a light bounce, and travel side to side with the line.",
     review: reviewKhatwa,
@@ -63,6 +71,8 @@ const DANCES = {
     exampleAlt: "مثال الخطوة",
   },
   samri: {
+    nameAr: "السامري",
+    nameEn: "Samri",
     label: "السامري · Samri",
     hint: "Night gathering energy: chest-height claps, a smaller bounce, no sword overhead.",
     review: reviewSamri,
@@ -134,7 +144,7 @@ function setDance(id) {
   poseHist.hipX.length = 0;
   poseHist.t.length = 0;
   lastToastKey = "";
-  nowDancing.textContent = DANCES[id].label;
+  nowDancing.innerHTML = `${DANCES[id].nameAr} · <span lang="en" dir="ltr">${DANCES[id].nameEn}</span>`;
   hintText.textContent = DANCES[id].hint;
   syncMusicLink();
   if (exampleOn) showExample(id);

@@ -228,7 +228,11 @@ button {
 }
 
 .dance-chip strong {
-  font-size: 1.22rem;
+  font-family: "Cinzel", "Palatino Linotype", Palatino, serif;
+  font-size: 1.18rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold);
 }
 
 .dance-chip small {
@@ -259,6 +263,12 @@ button {
   font-size: 1.4rem;
   font-family: "Noto Naskh Arabic", "Cairo", serif;
   text-align: start;
+}
+
+.now-dancing [lang="en"] {
+  font-family: "Cinzel", "Palatino Linotype", Palatino, serif;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .stage {
