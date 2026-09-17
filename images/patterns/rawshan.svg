@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="96" viewBox="0 0 200 96">
+  <g fill="none" stroke="#d4b06a" stroke-width="2.2">
+    <rect x="8" y="8" width="28" height="28"/>
+    <rect x="44" y="8" width="28" height="28"/>
+    <rect x="80" y="8" width="28" height="28"/>
+    <rect x="116" y="8" width="28" height="28"/>
+    <rect x="152" y="8" width="28" height="28"/>
+    <rect x="8" y="44" width="28" height="28"/>
+    <rect x="44" y="44" width="28" height="28"/>
+    <rect x="80" y="44" width="28" height="28"/>
+    <rect x="116" y="44" width="28" height="28"/>
+    <rect x="152" y="44" width="28" height="28"/>
+  </g>
+  <g fill="#c4a574">
+    <circle cx="22" cy="22" r="5"/>
+    <circle cx="58" cy="22" r="5"/>
+    <circle cx="94" cy="22" r="5"/>
+    <circle cx="130" cy="22" r="5"/>
+    <circle cx="166" cy="22" r="5"/>
+    <circle cx="22" cy="58" r="5"/>
+    <circle cx="58" cy="58" r="5"/>
+    <circle cx="94" cy="58" r="5"/>
+    <circle cx="130" cy="58" r="5"/>
+    <circle cx="166" cy="58" r="5"/>
+  </g>
+  <g fill="#e8d5b0">
+    <polygon points="8,96 22,78 36,96"/>
+    <polygon points="44,96 58,78 72,96"/>
+    <polygon points="80,96 94,78 108,96"/>
+    <polygon points="116,96 130,78 144,96"/>
+    <polygon points="152,96 166,78 180,96"/>
+  </g>
+</svg>
