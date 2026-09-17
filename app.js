@@ -12,6 +12,10 @@ const scoreEl = document.getElementById("score");
 const cuesEl = document.getElementById("cues");
 const startBtn = document.getElementById("startBtn");
 const startBtn2 = document.getElementById("startBtn2");
+const startWithExampleBtn = document.getElementById("startWithExampleBtn");
+const exampleBtn = document.getElementById("exampleBtn");
+const coachRow = document.getElementById("coachRow");
+const exampleWrap = document.getElementById("exampleWrap");
 const ytBtn = document.getElementById("ytBtn");
 const exampleImg = document.getElementById("exampleImg");
 const hintText = document.getElementById("hintText");
@@ -68,8 +72,17 @@ const DANCES = {
   },
 };
 
-startBtn.addEventListener("click", startCamera);
-startBtn2.addEventListener("click", startCamera);
+startBtn.addEventListener("click", () => startCamera(false));
+startBtn2.addEventListener("click", () => startCamera(false));
+if (startWithExampleBtn) {
+  startWithExampleBtn.addEventListener("click", () => startCamera(true));
+}
+if (exampleBtn) {
+  exampleBtn.addEventListener("click", () => {
+    setExampleVisible(!exampleOn);
+    if (exampleOn && !video.srcObject) startCamera(true);
+  });
+}
 document.getElementById("danceNav").addEventListener("click", (event) => {
   const btn = event.target.closest("[data-dance]");
   if (!btn) return;
@@ -77,8 +90,8 @@ document.getElementById("danceNav").addEventListener("click", (event) => {
 });
 let exampleTimer = 0;
 let exampleFrame = 0;
+let exampleOn = false;
 syncMusicLink();
-showExample(currentDance);
 
 function youtubeSearchUrl(query) {
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
@@ -86,6 +99,18 @@ function youtubeSearchUrl(query) {
 
 function syncMusicLink() {
   if (ytBtn) ytBtn.href = youtubeSearchUrl(DANCES[currentDance].ytQuery);
+}
+
+function setExampleVisible(on) {
+  exampleOn = Boolean(on);
+  if (coachRow) coachRow.classList.toggle("with-example", exampleOn);
+  if (exampleWrap) exampleWrap.hidden = !exampleOn;
+  if (exampleBtn) exampleBtn.textContent = exampleOn ? "بدون مثال" : "مع المثال";
+  if (exampleOn) showExample(currentDance);
+  else if (exampleTimer) {
+    clearInterval(exampleTimer);
+    exampleTimer = 0;
+  }
 }
 
 function showExample(id) {
@@ -112,7 +137,7 @@ function setDance(id) {
   nowDancing.textContent = DANCES[id].label;
   hintText.textContent = DANCES[id].hint;
   syncMusicLink();
-  showExample(id);
+  if (exampleOn) showExample(id);
   for (const chip of document.querySelectorAll(".dance-chip")) {
     chip.classList.toggle("is-on", chip.dataset.dance === id);
   }
@@ -141,9 +166,11 @@ function stopCamera() {
   video.srcObject = null;
 }
 
-async function startCamera() {
+async function startCamera(withExample = false) {
+  if (withExample) setExampleVisible(true);
   startBtn.disabled = true;
   startBtn2.disabled = true;
+  if (startWithExampleBtn) startWithExampleBtn.disabled = true;
   startBtn.textContent = "…";
   try {
     await ensurePose();
@@ -157,6 +184,7 @@ async function startCamera() {
     permission.hidden = true;
     startBtn.disabled = false;
     startBtn2.disabled = false;
+    if (startWithExampleBtn) startWithExampleBtn.disabled = false;
     startBtn.textContent = "ابدأ";
     startBtn2.textContent = "الكاميرا";
     if (!loopStarted) {
@@ -166,6 +194,7 @@ async function startCamera() {
   } catch (err) {
     startBtn.disabled = false;
     startBtn2.disabled = false;
+    if (startWithExampleBtn) startWithExampleBtn.disabled = false;
     startBtn.textContent = "ابدأ";
     maybeToast("ما قدرت أفتح الكاميرا. جرّب مرة ثانية.", "bad", "cam-fail");
     console.error(err);

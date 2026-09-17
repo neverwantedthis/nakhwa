@@ -65,8 +65,8 @@
 
     <main class="stage">
       <section class="camera-card">
-        <div class="coach-row">
-          <figure class="example-wrap">
+        <div class="coach-row" id="coachRow">
+          <figure class="example-wrap" id="exampleWrap" hidden>
             <figcaption>المثال · قلّد كذا</figcaption>
             <img id="exampleImg" src="images/guides/guide-ardah-1.png" alt="مثال العرضة" width="480" height="640" />
           </figure>
@@ -79,12 +79,14 @@
               <p lang="en" dir="ltr">Stand so your whole body is in view, then start.</p>
               <div class="actions">
                 <button id="startBtn" type="button">ابدأ</button>
+                <button id="startWithExampleBtn" type="button" class="ghost">ابدأ مع المثال</button>
               </div>
             </div>
           </div>
         </div>
         <div class="source-bar">
           <button id="startBtn2" type="button">ابدأ الكاميرا</button>
+          <button id="exampleBtn" type="button" class="ghost">مع المثال</button>
           <a id="ytBtn" class="music-btn" href="https://www.youtube.com/results?search_query=%D8%A7%D9%84%D8%B9%D8%B1%D8%B6%D8%A9%20%D8%A7%D9%84%D9%86%D8%AC%D8%AF%D9%8A%D8%A9%20%D8%A7%D9%84%D9%8A%D9%88%D9%85%20%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A" target="_blank" rel="noopener">الموسيقى</a>
         </div>
       </section>
