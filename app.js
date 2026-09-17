@@ -13,6 +13,7 @@ const cuesEl = document.getElementById("cues");
 const startBtn = document.getElementById("startBtn");
 const startBtn2 = document.getElementById("startBtn2");
 const ytBtn = document.getElementById("ytBtn");
+const exampleImg = document.getElementById("exampleImg");
 const hintText = document.getElementById("hintText");
 const nowDancing = document.getElementById("nowDancing");
 
@@ -30,30 +31,40 @@ const DANCES = {
     hint: "Proud upright chest, a slightly bent bounce in the knees, a raised sword arm, and a steady drum rhythm.",
     review: reviewArdah,
     ytQuery: "العرضة النجدية اليوم الوطني",
+    example: ["images/guides/guide-ardah-1.png", "images/guides/guide-ardah-2.png"],
+    exampleAlt: "مثال العرضة",
   },
   mezmar: {
     label: "المزمار · Mezmar",
     hint: "Hijazi stick dance: wrists around chest height as if holding or clapping a stick, athletic knees, and a driving bounce.",
     review: reviewMezmar,
     ytQuery: "رقصة المزمار الحجازي",
+    example: ["images/guides/guide-mezmar-1.png", "images/guides/guide-mezmar-2.png"],
+    exampleAlt: "مثال المزمار",
   },
   tasheer: {
     label: "التعشير · Tasheer",
     hint: "Rifle high, then explode upward. Look for an overhead arm and a real jump — bigger hip travel than Ardah.",
     review: reviewTasheer,
     ytQuery: "رقصة التعشير الحجاز",
+    example: ["images/guides/guide-tasheer-1.png", "images/guides/guide-tasheer-2.png"],
+    exampleAlt: "مثال التعشير",
   },
   khatwa: {
     label: "الخطوة · Khatwa",
     hint: "Southern stepping dance: stay tall, keep a light bounce, and travel side to side with the line.",
     review: reviewKhatwa,
     ytQuery: "رقصة الخطوة الجنوبية",
+    example: ["images/guides/guide-khatwa-1.png", "images/guides/guide-khatwa-2.png"],
+    exampleAlt: "مثال الخطوة",
   },
   samri: {
     label: "السامري · Samri",
     hint: "Night gathering energy: chest-height claps, a smaller bounce, no sword overhead.",
     review: reviewSamri,
     ytQuery: "السامري النجدي",
+    example: ["images/guides/guide-samri-1.png", "images/guides/guide-samri-2.png"],
+    exampleAlt: "مثال السامري",
   },
 };
 
@@ -64,7 +75,10 @@ document.getElementById("danceNav").addEventListener("click", (event) => {
   if (!btn) return;
   setDance(btn.dataset.dance);
 });
+let exampleTimer = 0;
+let exampleFrame = 0;
 syncMusicLink();
+showExample(currentDance);
 
 function youtubeSearchUrl(query) {
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
@@ -72,6 +86,20 @@ function youtubeSearchUrl(query) {
 
 function syncMusicLink() {
   if (ytBtn) ytBtn.href = youtubeSearchUrl(DANCES[currentDance].ytQuery);
+}
+
+function showExample(id) {
+  const dance = DANCES[id];
+  if (!exampleImg || !dance?.example?.length) return;
+  exampleFrame = 0;
+  exampleImg.src = dance.example[0];
+  exampleImg.alt = dance.exampleAlt || dance.label;
+  if (exampleTimer) clearInterval(exampleTimer);
+  if (dance.example.length < 2) return;
+  exampleTimer = setInterval(() => {
+    exampleFrame = (exampleFrame + 1) % dance.example.length;
+    exampleImg.src = dance.example[exampleFrame];
+  }, 650);
 }
 
 function setDance(id) {
@@ -84,6 +112,7 @@ function setDance(id) {
   nowDancing.textContent = DANCES[id].label;
   hintText.textContent = DANCES[id].hint;
   syncMusicLink();
+  showExample(id);
   for (const chip of document.querySelectorAll(".dance-chip")) {
     chip.classList.toggle("is-on", chip.dataset.dance === id);
   }

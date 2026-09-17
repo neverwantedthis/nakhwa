@@ -65,15 +65,21 @@
 
     <main class="stage">
       <section class="camera-card">
-        <div class="video-wrap">
-          <video id="webcam" playsinline muted></video>
-          <canvas id="overlay"></canvas>
-          <div id="toast" class="toast" hidden></div>
-          <div id="permission" class="permission">
-            <p class="perm-ar">قف أمام الكاميرا بجسمك كامل في الإطار، ثم ابدأ.</p>
-            <p lang="en" dir="ltr">Stand so your whole body is in view, then start.</p>
-            <div class="actions">
-              <button id="startBtn" type="button">ابدأ</button>
+        <div class="coach-row">
+          <figure class="example-wrap">
+            <figcaption>المثال · قلّد كذا</figcaption>
+            <img id="exampleImg" src="images/guides/guide-ardah-1.png" alt="مثال العرضة" width="480" height="640" />
+          </figure>
+          <div class="video-wrap">
+            <video id="webcam" playsinline muted></video>
+            <canvas id="overlay"></canvas>
+            <div id="toast" class="toast" hidden></div>
+            <div id="permission" class="permission">
+              <p class="perm-ar">قف أمام الكاميرا بجسمك كامل في الإطار، ثم ابدأ.</p>
+              <p lang="en" dir="ltr">Stand so your whole body is in view, then start.</p>
+              <div class="actions">
+                <button id="startBtn" type="button">ابدأ</button>
+              </div>
             </div>
           </div>
         </div>
